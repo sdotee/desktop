@@ -1,4 +1,5 @@
-# Maintainer: S.EE Team <support@s.ee>
+# Maintainer: S.EE Team <dev@s.ee>
+# Maintainer: Xiufeng Guo <i@m.ac>
 pkgname=see
 pkgver=0.1.0
 pkgrel=1
@@ -9,7 +10,7 @@ license=('MIT')
 depends=('gtk4' 'libadwaita' 'cairo' 'pango' 'gdk-pixbuf2' 'glib2')
 makedepends=('rust' 'cargo')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/refs/tags/v$pkgver.tar.gz")
-sha256sums=('SKIP')
+sha256sums=('038129604ca8311a2cb47840c35c2d680c69cf53d5b9d8125281380e2a4515da')
 
 prepare() {
     cd "desktop-$pkgver/linux"
