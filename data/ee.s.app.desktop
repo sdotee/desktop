@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=S.EE
+Comment=URL shortening, text sharing, and file hosting
+Exec=see
+Icon=ee.s.app
+Terminal=false
+Type=Application
+Categories=Network;Utility;
+Keywords=url;shortener;link;share;file;upload;
+StartupNotify=true

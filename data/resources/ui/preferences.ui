@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="libadwaita" version="1.0"/>
+  <template class="SeePreferencesWindow" parent="AdwPreferencesWindow">
+    <property name="title" translatable="yes">Preferences</property>
+    <property name="default-width">600</property>
+    <property name="default-height">400</property>
+    <property name="modal">True</property>
+    <child>
+      <object class="AdwPreferencesPage">
+        <property name="title" translatable="yes">General</property>
+        <property name="icon-name">applications-system-symbolic</property>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">API Configuration</property>
+            <property name="description" translatable="yes">Configure your S.EE API credentials</property>
+            <child>
+              <object class="AdwPasswordEntryRow" id="api_key_entry">
+                <property name="title" translatable="yes">API Key</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwEntryRow" id="base_url_entry">
+                <property name="title" translatable="yes">Base URL</property>
+                <property name="text">https://s.ee/api/v1</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="AdwPreferencesGroup">
+            <property name="title" translatable="yes">Default Domains</property>
+            <property name="description" translatable="yes">Set default domains for each service type</property>
+            <child>
+              <object class="AdwComboRow" id="default_link_domain_combo">
+                <property name="title" translatable="yes">Links</property>
+                <property name="subtitle" translatable="yes">Loading...</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwComboRow" id="default_text_domain_combo">
+                <property name="title" translatable="yes">Texts</property>
+                <property name="subtitle" translatable="yes">Loading...</property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwComboRow" id="default_file_domain_combo">
+                <property name="title" translatable="yes">Files</property>
+                <property name="subtitle" translatable="yes">Loading...</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

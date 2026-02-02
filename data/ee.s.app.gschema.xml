@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="see">
+  <schema id="ee.s.app" path="/ee/s/app/">
+    <key name="window-width" type="i">
+      <default>800</default>
+      <summary>Window width</summary>
+      <description>The width of the main window</description>
+    </key>
+    <key name="window-height" type="i">
+      <default>600</default>
+      <summary>Window height</summary>
+      <description>The height of the main window</description>
+    </key>
+    <key name="window-maximized" type="b">
+      <default>false</default>
+      <summary>Window maximized</summary>
+      <description>Whether the window is maximized</description>
+    </key>
+    <key name="default-domain" type="s">
+      <default>'s.ee'</default>
+      <summary>Default domain</summary>
+      <description>The default domain to use for shortening URLs</description>
+    </key>
+  </schema>
+</schemalist>

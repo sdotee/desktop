@@ -1,0 +1,30 @@
+[package]
+name = "see"
+version = "0.1.0"
+edition = "2024"
+description = "A native GNOME desktop client for S.EE URL shortening service"
+authors = ["S.EE Team"]
+license = "MIT"
+
+[dependencies]
+gtk = { package = "gtk4", version = "0.9", features = ["v4_14"] }
+adw = { package = "libadwaita", version = "0.7", features = ["v1_5"] }
+see-sdk = "1.1"
+reqwest = { version = "0.11", features = ["blocking", "json"] }
+async-channel = "2.3"
+glib = "0.20"
+gio = "0.20"
+directories = "5"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml = "0.8"
+thiserror = "2"
+chrono = { version = "0.4", features = ["serde"] }
+qrcode = "0.14"
+image = "0.25"
+cairo-rs = { version = "0.20", features = ["pdf"] }
+log = "0.4"
+env_logger = "0.11"
+
+[build-dependencies]
+glib-build-tools = "0.20"

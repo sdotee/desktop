@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg_gradient" x1="128" y1="0" x2="0" y2="128" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#52CFE1"/>
+      <stop offset="1" stop-color="#D8F14C"/>
+    </linearGradient>
+    <clipPath id="rounded_clip">
+      <rect width="128" height="128" rx="28" fill="white"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#rounded_clip)">
+    <rect width="128" height="128" rx="28" fill="url(#bg_gradient)"/>
+    <path d="M64 16L67.626 38.0124C70.8688 57.7004 86.2996 73.1312 105.988 76.374L128 80L105.988 83.626C86.2996 86.8688 70.8688 102.3 67.626 121.988L64 144L60.374 121.988C57.1312 102.3 41.7004 86.8688 22.0124 83.626L0 80L22.0124 76.374C41.7004 73.1312 57.1312 57.7004 60.374 38.0124L64 16Z" fill="white"/>
+  </g>
+</svg>

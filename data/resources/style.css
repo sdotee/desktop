@@ -1,0 +1,333 @@
+/* S.EE Desktop - Custom Styles */
+/* Following GNOME HIG and GTK4 CSS conventions */
+
+/* ===== Accent Color (Brand Identity) ===== */
+/* Use a nice blue/teal accent for S.EE branding */
+@define-color see_accent #3584e4;
+@define-color see_accent_dark #1a73e8;
+
+/* ===== Window & Background ===== */
+window.background {
+  background-color: var(--window-bg-color);
+}
+
+/* ===== View Containers ===== */
+.see-view {
+  background-color: transparent;
+}
+
+/* ===== Create Section Card ===== */
+.create-card {
+  background-color: color-mix(in srgb, var(--card-bg-color) 95%, var(--accent-bg-color) 5%);
+  border-radius: 12px;
+  padding: 6px;
+  margin-bottom: 12px;
+}
+
+.create-card preferencesgroup > box > box:first-child > label {
+  font-weight: 700;
+  font-size: 1.1em;
+}
+
+/* ===== Entry Rows ===== */
+row.entry {
+  border-radius: 8px;
+}
+
+row.entry:focus-within {
+  outline: 2px solid var(--accent-bg-color);
+  outline-offset: -2px;
+}
+
+/* ===== Primary Action Button ===== */
+button.see-primary {
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--accent-bg-color) 100%, white 10%) 0%,
+    var(--accent-bg-color) 100%);
+  color: var(--accent-fg-color);
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 9999px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1),
+              0 1px 2px rgba(0, 0, 0, 0.06);
+  transition: all 200ms ease;
+  min-height: 36px;
+}
+
+button.see-primary:hover {
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--accent-bg-color) 90%, white 10%) 0%,
+    color-mix(in srgb, var(--accent-bg-color) 95%, white 5%) 100%);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15),
+              0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+button.see-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* ===== History Section ===== */
+.history-section {
+  margin-top: 8px;
+}
+
+.history-section > box > box:first-child > label {
+  font-weight: 600;
+  font-size: 0.95em;
+  opacity: 0.85;
+}
+
+/* ===== List Rows ===== */
+.see-row {
+  border-radius: 8px;
+  margin: 4px 0;
+  transition: background-color 150ms ease;
+}
+
+.see-row:hover {
+  background-color: color-mix(in srgb, var(--view-bg-color) 95%, var(--accent-bg-color) 5%);
+}
+
+/* Row title (short URL) */
+.see-row .title {
+  font-weight: 600;
+  color: var(--accent-color);
+}
+
+/* Row subtitle (original URL) */
+.see-row .subtitle {
+  font-size: 0.9em;
+  opacity: 0.7;
+}
+
+/* ===== Row Action Buttons ===== */
+.see-row button.flat {
+  border-radius: 8px;
+  padding: 8px;
+  min-width: 32px;
+  min-height: 32px;
+  transition: all 150ms ease;
+}
+
+.see-row button.flat:hover {
+  background-color: color-mix(in srgb, var(--view-bg-color) 90%, currentColor 10%);
+}
+
+/* Delete button - subtle red on hover */
+.see-row button.destructive-action.flat {
+  color: var(--destructive-color);
+  opacity: 0.7;
+}
+
+.see-row button.destructive-action.flat:hover {
+  background-color: color-mix(in srgb, var(--destructive-bg-color) 15%, transparent 85%);
+  opacity: 1;
+}
+
+/* Copy button - accent on hover */
+.see-row button.copy-button:hover {
+  background-color: color-mix(in srgb, var(--accent-bg-color) 15%, transparent 85%);
+  color: var(--accent-color);
+}
+
+/* QR button */
+.see-row button.qr-button:hover {
+  background-color: color-mix(in srgb, var(--accent-bg-color) 15%, transparent 85%);
+  color: var(--accent-color);
+}
+
+/* ===== Pagination ===== */
+.pagination-box {
+  padding: 12px;
+  border-radius: 8px;
+  background-color: transparent;
+}
+
+.pagination-box button {
+  border-radius: 50%;
+  padding: 8px;
+  min-width: 36px;
+  min-height: 36px;
+}
+
+.pagination-box button:hover:not(:disabled) {
+  background-color: color-mix(in srgb, var(--view-bg-color) 85%, var(--accent-bg-color) 15%);
+}
+
+.pagination-label {
+  font-size: 0.9em;
+  font-weight: 500;
+  opacity: 0.8;
+  min-width: 100px;
+}
+
+/* ===== Empty State ===== */
+.empty-state {
+  padding: 48px 24px;
+}
+
+.empty-state-icon {
+  opacity: 0.3;
+  margin-bottom: 16px;
+}
+
+.empty-state-title {
+  font-size: 1.4em;
+  font-weight: 700;
+  margin-bottom: 8px;
+  opacity: 0.9;
+}
+
+.empty-state-description {
+  font-size: 1em;
+  opacity: 0.6;
+}
+
+/* ===== Text Editor ===== */
+.text-editor-frame {
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--borders) 50%, transparent 50%);
+  background-color: var(--view-bg-color);
+}
+
+.text-editor-frame:focus-within {
+  border-color: var(--accent-bg-color);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent-bg-color) 30%, transparent 70%);
+}
+
+textview.see-textview {
+  background-color: transparent;
+  padding: 12px;
+}
+
+textview.see-textview text {
+  background-color: transparent;
+}
+
+/* ===== File Drop Zone ===== */
+.drop-zone {
+  border: 2px dashed color-mix(in srgb, var(--borders) 60%, transparent 40%);
+  border-radius: 12px;
+  padding: 32px;
+  background-color: color-mix(in srgb, var(--view-bg-color) 50%, transparent 50%);
+  transition: all 200ms ease;
+}
+
+.drop-zone:hover,
+.drop-zone.drag-over {
+  border-color: var(--accent-bg-color);
+  background-color: color-mix(in srgb, var(--accent-bg-color) 5%, var(--view-bg-color) 95%);
+}
+
+.drop-zone-icon {
+  opacity: 0.4;
+  margin-bottom: 12px;
+  transition: all 200ms ease;
+}
+
+.drop-zone:hover .drop-zone-icon {
+  opacity: 0.6;
+  transform: scale(1.1);
+}
+
+.drop-zone-text {
+  font-size: 1.1em;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.drop-zone-hint {
+  font-size: 0.9em;
+  opacity: 0.5;
+  margin-top: 4px;
+}
+
+/* ===== Clear History Button ===== */
+button.clear-history {
+  font-size: 0.85em;
+  opacity: 0.7;
+  transition: opacity 150ms ease;
+}
+
+button.clear-history:hover {
+  opacity: 1;
+  color: var(--destructive-color);
+}
+
+/* ===== QR Code Dialog ===== */
+.qr-dialog-content {
+  padding: 24px;
+}
+
+.qr-code-container {
+  background-color: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.qr-url-label {
+  font-family: monospace;
+  font-size: 0.9em;
+  padding: 8px 12px;
+  background-color: var(--view-bg-color);
+  border-radius: 6px;
+  margin-top: 16px;
+}
+
+/* ===== Preferences ===== */
+.preferences-page {
+  padding: 24px;
+}
+
+/* ===== Animations ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 200ms ease-out;
+}
+
+/* ===== Responsive Adjustments ===== */
+/* Handled by AdwBreakpoint in .ui files */
+
+/* ===== Dark Mode Adjustments ===== */
+@media (prefers-color-scheme: dark) {
+  .create-card {
+    background-color: color-mix(in srgb, var(--card-bg-color) 98%, var(--accent-bg-color) 2%);
+  }
+
+  .qr-code-container {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  button.see-primary {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2),
+                0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* ===== High Contrast Mode ===== */
+@media (prefers-contrast: more) {
+  .see-row {
+    border: 1px solid currentColor;
+  }
+
+  .create-card {
+    border: 1px solid currentColor;
+  }
+
+  button.see-primary {
+    border: 2px solid currentColor;
+  }
+}

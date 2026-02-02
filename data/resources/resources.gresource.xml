@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/ee/s/app">
+    <file preprocess="xml-stripblanks">ui/window.ui</file>
+    <file preprocess="xml-stripblanks">ui/preferences.ui</file>
+    <file preprocess="xml-stripblanks">ui/qr_dialog.ui</file>
+    <file preprocess="xml-stripblanks">ui/shortcuts.ui</file>
+    <file>style.css</file>
+  </gresource>
+  <gresource prefix="/ee/s/app/icons/scalable/apps">
+    <file preprocess="xml-stripblanks" alias="ee.s.app.svg">icons/ee.s.app.svg</file>
+  </gresource>
+  <gresource prefix="/ee/s/app/icons/scalable/actions">
+    <file preprocess="xml-stripblanks" alias="see-link-symbolic.svg">icons/link-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="see-text-symbolic.svg">icons/text-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="see-file-symbolic.svg">icons/file-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="see-qr-code-symbolic.svg">icons/qr-code-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="see-copy-page-symbolic.svg">icons/copy-page-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="see-copy-link-symbolic.svg">icons/copy-link-symbolic.svg</file>
+    <file preprocess="xml-stripblanks" alias="see-delete-symbolic.svg">icons/delete-symbolic.svg</file>
+  </gresource>
+</gresources>

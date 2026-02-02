@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>ee.s.app</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <name>S.EE</name>
+  <summary>URL shortening, text sharing, and file hosting</summary>
+  <description>
+    <p>
+      S.EE is a native GNOME desktop client for the S.EE service, providing:
+    </p>
+    <ul>
+      <li>URL shortening with custom domains and slugs</li>
+      <li>Text sharing with syntax highlighting</li>
+      <li>File uploads and hosting</li>
+      <li>QR code generation for all shared content</li>
+    </ul>
+  </description>
+  <launchable type="desktop-id">ee.s.app.desktop</launchable>
+  <url type="homepage">https://s.ee</url>
+  <developer id="ee.s">
+    <name>S.EE Team</name>
+  </developer>
+  <content_rating type="oars-1.1" />
+  <branding>
+    <color type="primary" scheme_preference="light">#62a0ea</color>
+    <color type="primary" scheme_preference="dark">#1a5fb4</color>
+  </branding>
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+    <control>touch</control>
+  </supports>
+</component>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="libadwaita" version="1.0"/>
+  <template class="SeeQrDialog" parent="AdwDialog">
+    <property name="title" translatable="yes">QR Code</property>
+    <property name="content-width">320</property>
+    <property name="content-height">420</property>
+    <child>
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <property name="show-start-title-buttons">False</property>
+            <property name="show-end-title-buttons">False</property>
+            <child type="start">
+              <object class="GtkButton">
+                <property name="label" translatable="yes">Close</property>
+                <property name="action-name">window.close</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <property name="content">
+          <object class="GtkBox">
+            <property name="orientation">vertical</property>
+            <property name="spacing">24</property>
+            <property name="margin-start">24</property>
+            <property name="margin-end">24</property>
+            <property name="margin-top">24</property>
+            <property name="margin-bottom">24</property>
+            <child>
+              <object class="GtkPicture" id="qr_picture">
+                <property name="hexpand">True</property>
+                <property name="vexpand">True</property>
+                <property name="can-shrink">True</property>
+                <property name="content-fit">contain</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkLabel" id="url_label">
+                <property name="wrap">True</property>
+                <property name="wrap-mode">word-char</property>
+                <property name="selectable">True</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
+              </object>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <property name="spacing">12</property>
+                <property name="halign">center</property>
+                <child>
+                  <object class="GtkButton" id="save_png_button">
+                    <property name="label" translatable="yes">Save PNG</property>
+                    <style>
+                      <class name="pill"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton" id="save_svg_button">
+                    <property name="label" translatable="yes">Save SVG</property>
+                    <style>
+                      <class name="pill"/>
+                    </style>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton" id="save_pdf_button">
+                    <property name="label" translatable="yes">Save PDF</property>
+                    <style>
+                      <class name="pill"/>
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </property>
+      </object>
+    </child>
+  </template>
+</interface>

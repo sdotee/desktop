@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk" version="4.0"/>
+  <requires lib="libadwaita" version="1.0"/>
+  <template class="SeeWindow" parent="AdwApplicationWindow">
+    <property name="title" translatable="yes">S.EE</property>
+    <property name="default-width">800</property>
+    <property name="default-height">600</property>
+    <property name="width-request">360</property>
+    <property name="height-request">294</property>
+    <child>
+      <object class="AdwBreakpoint">
+        <condition>max-width: 550sp</condition>
+        <setter object="switcher_bar" property="reveal">True</setter>
+        <setter object="header_switcher" property="visible">False</setter>
+      </object>
+    </child>
+    <property name="content">
+      <object class="AdwToolbarView">
+        <child type="top">
+          <object class="AdwHeaderBar">
+            <child type="title">
+              <object class="AdwViewSwitcher" id="header_switcher">
+                <property name="stack">view_stack</property>
+                <property name="policy">wide</property>
+              </object>
+            </child>
+            <child type="end">
+              <object class="GtkMenuButton" id="menu_button">
+                <property name="icon-name">open-menu-symbolic</property>
+                <property name="menu-model">primary_menu</property>
+                <property name="tooltip-text" translatable="yes">Main Menu</property>
+                <property name="primary">True</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <property name="content">
+          <object class="AdwViewStack" id="view_stack">
+            <child>
+              <object class="AdwViewStackPage">
+                <property name="name">links</property>
+                <property name="title" translatable="yes">Links</property>
+                <property name="icon-name">see-link-symbolic</property>
+                <property name="child">
+                  <object class="GtkBox" id="links_page">
+                    <property name="orientation">vertical</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwViewStackPage">
+                <property name="name">texts</property>
+                <property name="title" translatable="yes">Texts</property>
+                <property name="icon-name">see-text-symbolic</property>
+                <property name="child">
+                  <object class="GtkBox" id="texts_page">
+                    <property name="orientation">vertical</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="AdwViewStackPage">
+                <property name="name">files</property>
+                <property name="title" translatable="yes">Files</property>
+                <property name="icon-name">see-file-symbolic</property>
+                <property name="child">
+                  <object class="GtkBox" id="files_page">
+                    <property name="orientation">vertical</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+          </object>
+        </property>
+        <child type="bottom">
+          <object class="AdwViewSwitcherBar" id="switcher_bar">
+            <property name="stack">view_stack</property>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+  <menu id="primary_menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">_Preferences</attribute>
+        <attribute name="action">app.preferences</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_Keyboard Shortcuts</attribute>
+        <attribute name="action">win.show-help-overlay</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">_About S.EE</attribute>
+        <attribute name="action">app.about</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>
