@@ -62,7 +62,9 @@ jobs:
             libcairo2-dev \
             libpango1.0-dev \
             libgdk-pixbuf-2.0-dev \
-            libglib2.0-dev
+            libglib2.0-dev \
+            libssl-dev \
+            pkg-config
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -118,6 +120,8 @@ jobs:
             pango-devel \
             gdk-pixbuf2-devel \
             glib2-devel \
+            openssl-devel \
+            perl-FindBin \
             rpm-build
 
       - name: Checkout
