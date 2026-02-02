@@ -17,15 +17,8 @@ env:
 
 jobs:
   build-flatpak:
-    name: Build Flatpak (${{ matrix.arch }})
-    runs-on: ${{ matrix.runner }}
-    strategy:
-      matrix:
-        include:
-          - arch: x86_64
-            runner: ubuntu-24.04
-          - arch: aarch64
-            runner: ubuntu-24.04-arm
+    name: Build Flatpak (x86_64)
+    runs-on: ubuntu-24.04
     container:
       image: bilelmoussaoui/flatpak-github-actions:gnome-47
       options: --privileged
@@ -36,15 +29,15 @@ jobs:
       - name: Build Flatpak
         uses: flatpak/flatpak-github-actions/flatpak-builder@v6
         with:
-          bundle: ${{ env.APP_NAME }}-${{ github.ref_name }}-${{ matrix.arch }}.flatpak
+          bundle: ${{ env.APP_NAME }}-${{ github.ref_name }}-x86_64.flatpak
           manifest-path: linux/packaging/flatpak/${{ env.APP_ID }}.yml
-          cache-key: flatpak-builder-${{ matrix.arch }}-${{ github.sha }}
+          cache-key: flatpak-builder-${{ github.sha }}
 
       - name: Upload Flatpak
         uses: actions/upload-artifact@v6
         with:
-          name: flatpak-${{ matrix.arch }}
-          path: ${{ env.APP_NAME }}-${{ github.ref_name }}-${{ matrix.arch }}.flatpak
+          name: flatpak-x86_64
+          path: ${{ env.APP_NAME }}-${{ github.ref_name }}-x86_64.flatpak
 
   build-deb:
     name: Build Deb Package (${{ matrix.arch }})
