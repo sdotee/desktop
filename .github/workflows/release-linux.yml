@@ -29,15 +29,20 @@ jobs:
       - name: Build Flatpak
         uses: flatpak/flatpak-github-actions/flatpak-builder@v6
         with:
-          bundle: ${{ env.APP_NAME }}-${{ github.ref_name }}-x86_64.flatpak
+          bundle: ${{ env.APP_NAME }}.flatpak
           manifest-path: linux/packaging/flatpak/${{ env.APP_ID }}.yml
           cache-key: flatpak-builder-${{ github.sha }}
+
+      - name: Rename Flatpak
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          mv ${{ env.APP_NAME }}.flatpak ${{ env.APP_NAME }}-${VERSION}-x86_64.flatpak
 
       - name: Upload Flatpak
         uses: actions/upload-artifact@v6
         with:
           name: flatpak-x86_64
-          path: ${{ env.APP_NAME }}-${{ github.ref_name }}-x86_64.flatpak
+          path: ${{ env.APP_NAME }}-*-x86_64.flatpak
 
   build-deb:
     name: Build Deb Package (${{ matrix.arch }})
