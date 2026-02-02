@@ -181,6 +181,12 @@ jobs:
           cp linux/packaging/PKGBUILD release/
           ls -la release/
 
+      - name: Generate SHA256 checksums
+        run: |
+          cd release
+          sha256sum * > SHA256SUMS
+          cat SHA256SUMS
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
