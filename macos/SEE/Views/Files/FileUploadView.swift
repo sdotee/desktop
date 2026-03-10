@@ -464,14 +464,10 @@ struct FileUploadView: View {
             .appendingPathComponent(UUID().uuidString)
             .appendingPathExtension("mp4")
 
-        session.outputURL = outputURL
-        session.outputFileType = .mp4
-
-        await session.export()
-
-        if session.status == .completed {
+        do {
+            try await session.export(to: outputURL, as: .mp4)
             return outputURL
-        } else {
+        } catch {
             try? FileManager.default.removeItem(at: outputURL)
             return nil
         }

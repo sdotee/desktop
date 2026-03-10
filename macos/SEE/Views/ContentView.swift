@@ -131,6 +131,21 @@ struct OnboardingView: View {
         #endif
     }
 
+    // MARK: - App Icon
+
+    #if os(iOS)
+    private var appIconImage: Image {
+        if let icons = Bundle.main.infoDictionary?["CFBundleIcons"] as? [String: Any],
+           let primaryIcon = icons["CFBundlePrimaryIcon"] as? [String: Any],
+           let iconFiles = primaryIcon["CFBundleIconFiles"] as? [String],
+           let iconName = iconFiles.last,
+           let uiImage = UIImage(named: iconName) {
+            return Image(uiImage: uiImage)
+        }
+        return Image(systemName: "app.fill")
+    }
+    #endif
+
     // MARK: - macOS Layout
 
     #if os(macOS)
@@ -244,7 +259,7 @@ struct OnboardingView: View {
 
                 // Hero
                 VStack(spacing: 12) {
-                    Image("AppIcon-Display")
+                    appIconImage
                         .resizable()
                         .frame(width: 80, height: 80)
                         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
