@@ -1,0 +1,261 @@
+name: Release macOS
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Version tag (e.g., v1.0.2)'
+        required: true
+
+env:
+  APP_NAME: SEE
+  SCHEME: SEE
+  BUNDLE_ID: s.how.see
+  XCODE_PROJECT: macos/SEE.xcodeproj
+
+jobs:
+  build-and-release:
+    name: Build, Sign, Notarize & Release
+    runs-on: macos-15
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Determine version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            VERSION="${{ github.event.inputs.tag }}"
+          else
+            VERSION="${GITHUB_REF_NAME}"
+          fi
+          VERSION_NUMBER="${VERSION#v}"
+          echo "tag=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "number=${VERSION_NUMBER}" >> "$GITHUB_OUTPUT"
+
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_16.3.app/Contents/Developer
+
+      - name: Install Apple certificate and provisioning profile
+        env:
+          CERTIFICATE_P12_BASE64: ${{ secrets.MACOS_CERTIFICATE_P12 }}
+          CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          # Create variables
+          CERTIFICATE_PATH=$RUNNER_TEMP/certificate.p12
+          KEYCHAIN_PATH=$RUNNER_TEMP/build.keychain-db
+
+          # Decode certificate
+          echo "$CERTIFICATE_P12_BASE64" | base64 --decode -o "$CERTIFICATE_PATH"
+
+          # Create temporary keychain
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          # Import certificate to keychain
+          security import "$CERTIFICATE_PATH" -P "$CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k "$KEYCHAIN_PATH"
+          security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          security list-keychain -d user -s "$KEYCHAIN_PATH"
+
+      - name: Resolve SPM dependencies
+        run: |
+          xcodebuild -resolvePackageDependencies \
+            -project "$XCODE_PROJECT" \
+            -scheme "$SCHEME" \
+            -clonedSourcePackagesDirPath "$RUNNER_TEMP/spm"
+
+      - name: Build macOS app
+        env:
+          SPARKLE_ED25519_PUBLIC_KEY: ${{ secrets.SPARKLE_ED25519_PUBLIC_KEY }}
+        run: |
+          # Update the public key in Info.plist before building
+          /usr/libexec/PlistBuddy -c "Set :SUPublicEDKey ${SPARKLE_ED25519_PUBLIC_KEY}" macos/SEE/Info.plist
+
+          BUILD_NUMBER=${{ github.run_number }}
+          VERSION_NUMBER="${{ steps.version.outputs.number }}"
+
+          xcodebuild archive \
+            -project "$XCODE_PROJECT" \
+            -scheme "$SCHEME" \
+            -configuration Release \
+            -destination "generic/platform=macOS" \
+            -archivePath "$RUNNER_TEMP/SEE.xcarchive" \
+            -clonedSourcePackagesDirPath "$RUNNER_TEMP/spm" \
+            MARKETING_VERSION="$VERSION_NUMBER" \
+            CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="Developer ID Application" \
+            DEVELOPMENT_TEAM="${{ secrets.APPLE_TEAM_ID }}" \
+            OTHER_CODE_SIGN_FLAGS="--timestamp --options runtime" \
+            ONLY_ACTIVE_ARCH=NO
+
+      - name: Export archive
+        run: |
+          cat > "$RUNNER_TEMP/ExportOptions.plist" << 'PLIST'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>developer-id</string>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>teamID</key>
+            <string>${{ secrets.APPLE_TEAM_ID }}</string>
+            <key>signingCertificate</key>
+            <string>Developer ID Application</string>
+          </dict>
+          </plist>
+          PLIST
+
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/SEE.xcarchive" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            -exportPath "$RUNNER_TEMP/export"
+
+      - name: Create DMG
+        run: |
+          VERSION_NUMBER="${{ steps.version.outputs.number }}"
+          APP_PATH="$RUNNER_TEMP/export/SEE.app"
+          DMG_NAME="SEE-${VERSION_NUMBER}.dmg"
+          DMG_PATH="$RUNNER_TEMP/${DMG_NAME}"
+
+          # Create a temporary directory for DMG contents
+          DMG_STAGING="$RUNNER_TEMP/dmg-staging"
+          mkdir -p "$DMG_STAGING"
+          cp -R "$APP_PATH" "$DMG_STAGING/"
+          ln -s /Applications "$DMG_STAGING/Applications"
+
+          # Create DMG
+          hdiutil create -volname "S.EE" \
+            -srcfolder "$DMG_STAGING" \
+            -ov -format UDZO \
+            "$DMG_PATH"
+
+          echo "DMG_PATH=${DMG_PATH}" >> "$GITHUB_ENV"
+          echo "DMG_NAME=${DMG_NAME}" >> "$GITHUB_ENV"
+
+      - name: Notarize DMG
+        env:
+          APPLE_ID: ${{ secrets.APPLE_ID }}
+          APPLE_APP_PASSWORD: ${{ secrets.APPLE_APP_PASSWORD }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          # Submit for notarization
+          xcrun notarytool submit "$DMG_PATH" \
+            --apple-id "$APPLE_ID" \
+            --password "$APPLE_APP_PASSWORD" \
+            --team-id "$APPLE_TEAM_ID" \
+            --wait --timeout 30m
+
+          # Staple the notarization ticket
+          xcrun stapler staple "$DMG_PATH"
+
+      - name: Generate Sparkle appcast
+        env:
+          SPARKLE_ED25519_PRIVATE_KEY: ${{ secrets.SPARKLE_ED25519_PRIVATE_KEY }}
+          SPARKLE_DOWNLOAD_URL_PREFIX: ${{ secrets.SPARKLE_DOWNLOAD_URL_PREFIX }}
+        run: |
+          VERSION_NUMBER="${{ steps.version.outputs.number }}"
+
+          # Get DMG file size and generate EdDSA signature
+          DMG_SIZE=$(stat -f%z "$DMG_PATH")
+          SIGNATURE=$(echo -n "" | cat "$DMG_PATH" | openssl dgst -binary -sha256 | \
+            python3 -c "
+          import sys, base64, subprocess
+          # Use Sparkle's sign_update if available, otherwise we handle in workflow
+          print('PLACEHOLDER')
+          " 2>/dev/null || echo "PLACEHOLDER")
+
+          # Use Sparkle's sign_update tool from SPM cache
+          SPARKLE_SIGN_UPDATE=$(find "$RUNNER_TEMP/spm" -name "sign_update" -type f 2>/dev/null | head -1)
+          if [ -z "$SPARKLE_SIGN_UPDATE" ]; then
+            # Build sign_update from Sparkle package
+            SPARKLE_DIR=$(find "$RUNNER_TEMP/spm" -name "Sparkle" -type d -maxdepth 2 | head -1)
+            if [ -d "$SPARKLE_DIR" ]; then
+              SPARKLE_SIGN_UPDATE=$(find "$SPARKLE_DIR" -name "sign_update" -perm +111 -type f 2>/dev/null | head -1)
+            fi
+          fi
+
+          if [ -n "$SPARKLE_SIGN_UPDATE" ] && [ -x "$SPARKLE_SIGN_UPDATE" ]; then
+            SIGNATURE=$("$SPARKLE_SIGN_UPDATE" "$DMG_PATH" --ed-key-file <(echo "$SPARKLE_ED25519_PRIVATE_KEY") 2>/dev/null | grep "sparkle:edSignature" | sed 's/.*sparkle:edSignature="\([^"]*\)".*/\1/')
+          else
+            # Fallback: use generate_appcast approach
+            mkdir -p "$RUNNER_TEMP/appcast-staging"
+            cp "$DMG_PATH" "$RUNNER_TEMP/appcast-staging/"
+
+            GENERATE_APPCAST=$(find "$RUNNER_TEMP/spm" -name "generate_appcast" -perm +111 -type f 2>/dev/null | head -1)
+            if [ -n "$GENERATE_APPCAST" ] && [ -x "$GENERATE_APPCAST" ]; then
+              "$GENERATE_APPCAST" \
+                --ed-key-file <(echo "$SPARKLE_ED25519_PRIVATE_KEY") \
+                --download-url-prefix "${SPARKLE_DOWNLOAD_URL_PREFIX:-https://s.ee/sparkle/}" \
+                "$RUNNER_TEMP/appcast-staging"
+
+              if [ -f "$RUNNER_TEMP/appcast-staging/appcast.xml" ]; then
+                cp "$RUNNER_TEMP/appcast-staging/appcast.xml" "$RUNNER_TEMP/appcast.xml"
+                echo "APPCAST_PATH=$RUNNER_TEMP/appcast.xml" >> "$GITHUB_ENV"
+              fi
+            fi
+          fi
+
+          # If we got a signature but no appcast yet, generate one manually
+          if [ -z "${APPCAST_PATH:-}" ]; then
+            DOWNLOAD_URL="${SPARKLE_DOWNLOAD_URL_PREFIX:-https://s.ee/sparkle/}${DMG_NAME}"
+
+            cat > "$RUNNER_TEMP/appcast.xml" << APPCAST_EOF
+          <?xml version="1.0" encoding="utf-8"?>
+          <rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle" xmlns:dc="http://purl.org/dc/elements/1.1/">
+            <channel>
+              <title>S.EE</title>
+              <link>https://s.ee/sparkle/appcast.xml</link>
+              <description>S.EE App Updates</description>
+              <language>en</language>
+              <item>
+                <title>Version ${VERSION_NUMBER}</title>
+                <sparkle:version>${{ github.run_number }}</sparkle:version>
+                <sparkle:shortVersionString>${VERSION_NUMBER}</sparkle:shortVersionString>
+                <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+                <pubDate>$(date -R)</pubDate>
+                <enclosure url="${DOWNLOAD_URL}"
+                  sparkle:edSignature="${SIGNATURE}"
+                  length="${DMG_SIZE}"
+                  type="application/octet-stream" />
+              </item>
+            </channel>
+          </rss>
+          APPCAST_EOF
+            echo "APPCAST_PATH=$RUNNER_TEMP/appcast.xml" >> "$GITHUB_ENV"
+          fi
+
+      - name: Generate SHA256 checksums
+        run: |
+          cd "$RUNNER_TEMP"
+          shasum -a 256 "$DMG_NAME" > "${DMG_NAME}.sha256"
+          cat "${DMG_NAME}.sha256"
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: S.EE ${{ steps.version.outputs.tag }} (macOS)
+          draft: false
+          prerelease: ${{ contains(steps.version.outputs.tag, '-') }}
+          generate_release_notes: true
+          files: |
+            ${{ runner.temp }}/${{ env.DMG_NAME }}
+            ${{ runner.temp }}/${{ env.DMG_NAME }}.sha256
+            ${{ runner.temp }}/appcast.xml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Clean up keychain
+        if: always()
+        run: |
+          security delete-keychain "$RUNNER_TEMP/build.keychain-db" 2>/dev/null || true

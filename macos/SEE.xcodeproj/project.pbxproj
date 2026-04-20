@@ -11,6 +11,7 @@
 		8E0E2A1C2F4EDA3C00C5259F /* WebP in Frameworks */ = {isa = PBXBuildFile; productRef = 8E0E2A1B2F4EDA3C00C5259F /* WebP */; };
 		8EF8AE4F2F50404F0094A32D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8EF8AE4E2F50404F0094A32D /* Assets.xcassets */; };
 		BF062F8A2F50C4F300122488 /* seeicon.icon in Resources */ = {isa = PBXBuildFile; fileRef = BF062F892F50C4F300122488 /* seeicon.icon */; };
+		AA0000012F60000000000001 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = AA0000002F60000000000001 /* Sparkle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -53,6 +54,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8E0E2A1C2F4EDA3C00C5259F /* WebP in Frameworks */,
+				AA0000012F60000000000001 /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -131,6 +133,7 @@
 			name = SEE;
 			packageProductDependencies = (
 				8E0E2A1B2F4EDA3C00C5259F /* WebP */,
+				AA0000002F60000000000001 /* Sparkle */,
 			);
 			productName = SEE;
 			productReference = 8E8F88072F4EC789003D73F1 /* SEE.app */;
@@ -210,6 +213,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				8E0E2A1A2F4EDA3C00C5259F /* XCRemoteSwiftPackageReference "Swift-WebP" */,
+				AA0000022F60000000000002 /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8E8F88082F4EC789003D73F1 /* Products */;
@@ -438,6 +442,7 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SEE/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = S.EE;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
@@ -513,6 +518,7 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = SEE/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = S.EE;
 				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
@@ -714,6 +720,14 @@
 				minimumVersion = 0.6.1;
 			};
 		};
+		AA0000022F60000000000002 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.6.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -721,6 +735,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8E0E2A1A2F4EDA3C00C5259F /* XCRemoteSwiftPackageReference "Swift-WebP" */;
 			productName = WebP;
+		};
+		AA0000002F60000000000001 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AA0000022F60000000000002 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
