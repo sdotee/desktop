@@ -196,7 +196,13 @@ jobs:
         env:
           SPARKLE_ED25519_PRIVATE_KEY: ${{ secrets.SPARKLE_ED25519_PRIVATE_KEY }}
         run: |
-          SIGN_OUTPUT=$("$SPARKLE_BIN/sign_update" -s "$SPARKLE_ED25519_PRIVATE_KEY" "$DMG_PATH")
+          KEY_FILE="$RUNNER_TEMP/sparkle_priv.key"
+          # Strip any trailing newline so sign_update sees a clean base64 string.
+          printf '%s' "$SPARKLE_ED25519_PRIVATE_KEY" > "$KEY_FILE"
+          chmod 600 "$KEY_FILE"
+          trap 'rm -f "$KEY_FILE"' EXIT
+
+          SIGN_OUTPUT=$("$SPARKLE_BIN/sign_update" -f "$KEY_FILE" "$DMG_PATH")
           SIGNATURE=$(printf '%s' "$SIGN_OUTPUT" | sed -n 's/.*sparkle:edSignature="\([^"]*\)".*/\1/p')
           if [ -z "$SIGNATURE" ]; then
             echo "ERROR: failed to extract sparkle:edSignature" >&2
