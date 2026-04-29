@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>SUFeedURL</key>
-	<string>https://s.ee/sparkle/appcast.xml</string>
+	<string>https://raw.githubusercontent.com/sdotee/app/main/macos/appcast.xml</string>
 	<key>SUPublicEDKey</key>
-	<string>SPARKLE_ED25519_PUBLIC_KEY</string>
+	<string>RHEhllstUuuVrVDCPGrbhg/8LivSzpuZB9X3u3xdV5o=</string>
 	<key>SUEnableAutomaticChecks</key>
 	<true/>
 </dict>

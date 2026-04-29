@@ -5,24 +5,13 @@ import Sparkle
 #endif
 
 #if os(macOS)
-final class CheckForUpdatesViewModel: ObservableObject {
-    @Published var canCheckForUpdates = false
-
-    init(updater: SPUUpdater) {
-        updater.publisher(for: \.canCheckForUpdates)
-            .assign(to: &$canCheckForUpdates)
-    }
-}
-
 struct CheckForUpdatesView: View {
-    @ObservedObject var checkForUpdatesViewModel: CheckForUpdatesViewModel
     let updater: SPUUpdater
 
     var body: some View {
         Button(String(localized: "Check for Updates…")) {
             updater.checkForUpdates()
         }
-        .disabled(!checkForUpdatesViewModel.canCheckForUpdates)
     }
 }
 #endif
@@ -65,10 +54,7 @@ struct SEEApp: App {
         .defaultSize(width: 900, height: 600)
         .commands {
             CommandGroup(after: .appInfo) {
-                CheckForUpdatesView(
-                    checkForUpdatesViewModel: CheckForUpdatesViewModel(updater: updaterController.updater),
-                    updater: updaterController.updater
-                )
+                CheckForUpdatesView(updater: updaterController.updater)
             }
             CommandGroup(after: .newItem) {
                 Button(String(localized: "New Short Link")) {

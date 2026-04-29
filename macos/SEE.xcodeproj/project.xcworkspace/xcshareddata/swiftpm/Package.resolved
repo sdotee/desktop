@@ -1,5 +1,5 @@
 {
-  "originHash" : "5c349475e6a0091d025c6ddd83a22e208a6f0cac9a638a14c6748bc7351a2bd3",
+  "originHash" : "64db855399237b1bcd26e2e4f22b74a187a97d70e989f36c71b365c62f5b52ce",
   "pins" : [
     {
       "identity" : "libwebp-xcode",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "0d60654eeefd5d7d2bef3835804892c40225e8b2",
         "version" : "1.5.0"
+      }
+    },
+    {
+      "identity" : "sparkle",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sparkle-project/Sparkle",
+      "state" : {
+        "revision" : "066e75a8b3e99962685d6a90cdd5293ebffd9261",
+        "version" : "2.9.1"
       }
     },
     {

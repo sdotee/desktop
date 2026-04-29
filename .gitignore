@@ -44,3 +44,10 @@ captures/
 *.keystore
 keystore.properties
 /android/.idea
+
+# Local environment files (per-platform secrets, never commit)
+.env
+.env.local
+**/.env
+**/.env.local
+!**/.env.example
