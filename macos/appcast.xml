@@ -5,5 +5,16 @@
     <link>https://raw.githubusercontent.com/sdotee/app/main/macos/appcast.xml</link>
     <description>S.EE App Updates</description>
     <language>en</language>
+    <item>
+      <title>Version 0.2.0</title>
+      <sparkle:version>5</sparkle:version>
+      <sparkle:shortVersionString>0.2.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <pubDate>Wed, 29 Apr 2026 07:49:05 +0000</pubDate>
+      <enclosure url="https://github.com/sdotee/app/releases/download/v0.2.0/SEE-0.2.0.dmg"
+        sparkle:edSignature="fEiAvee8zJ5giNz07L+fkm+qRsPTkGX3yKbK2wj5/BQhF/CP+J4cB0OgOg2lb3c1i0zpFZtrk5eEVGiKBCZyBg=="
+        length="5667208"
+        type="application/octet-stream" />
+    </item>
   </channel>
 </rss>
