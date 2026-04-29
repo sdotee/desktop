@@ -15,6 +15,8 @@ env:
   SCHEME: SEE
   XCODE_PROJECT: macos/SEE.xcodeproj
   SPARKLE_VERSION: 2.9.1
+  DMGMAKER_REPO: https://github.com/saihgupr/DMGMaker.git
+  DMGMAKER_COMMIT: 9e17aec84483938d154ce159ded8ce641379d5aa
 
 jobs:
   build-and-release:
@@ -147,21 +149,31 @@ jobs:
           xcrun stapler staple "$APP_PATH"
           xcrun stapler validate "$APP_PATH"
 
+      - name: Setup DMGMaker
+        run: |
+          DMGMAKER_DIR="$RUNNER_TEMP/DMGMaker"
+          git clone "$DMGMAKER_REPO" "$DMGMAKER_DIR"
+          git -C "$DMGMAKER_DIR" checkout --detach "$DMGMAKER_COMMIT"
+          echo "DMGMAKER_DIR=${DMGMAKER_DIR}" >> "$GITHUB_ENV"
+
+      - name: Cache DMGMaker build
+        uses: actions/cache@v4
+        with:
+          path: ${{ runner.temp }}/DMGMaker/.build
+          key: dmgmaker-${{ env.DMGMAKER_COMMIT }}-${{ runner.os }}-${{ runner.arch }}
+
       - name: Create DMG
         run: |
           VERSION_NUMBER="${{ steps.version.outputs.number }}"
           DMG_NAME="SEE-${VERSION_NUMBER}.dmg"
           DMG_PATH="$RUNNER_TEMP/${DMG_NAME}"
+          APP_PATH="$RUNNER_TEMP/export/SEE.app"
 
-          DMG_STAGING="$RUNNER_TEMP/dmg-staging"
-          mkdir -p "$DMG_STAGING"
-          cp -R "$RUNNER_TEMP/export/SEE.app" "$DMG_STAGING/"
-          ln -s /Applications "$DMG_STAGING/Applications"
+          ( cd "$DMGMAKER_DIR" && swift run -c release "DMG Maker" \
+              --app "$APP_PATH" --name "S.EE" )
 
-          hdiutil create -volname "S.EE" \
-            -srcfolder "$DMG_STAGING" \
-            -ov -format UDZO \
-            "$DMG_PATH"
+          # DMGMaker writes <name>.dmg next to the input .app; rename to versioned filename.
+          mv "$RUNNER_TEMP/export/S.EE.dmg" "$DMG_PATH"
 
           echo "DMG_PATH=${DMG_PATH}" >> "$GITHUB_ENV"
           echo "DMG_NAME=${DMG_NAME}" >> "$GITHUB_ENV"

@@ -27,6 +27,26 @@ if [ ! -x "$SIGN_UPDATE" ]; then
   exit 1
 fi
 
+# DMGMaker — pinned to a specific commit so upstream changes can't break builds.
+: "${DMGMAKER_DIR:=$HOME/Tools/DMGMaker}"
+: "${DMGMAKER_REPO:=https://github.com/saihgupr/DMGMaker.git}"
+: "${DMGMAKER_COMMIT:=9e17aec84483938d154ce159ded8ce641379d5aa}"
+
+setup_dmgmaker() {
+  if [ ! -d "$DMGMAKER_DIR/.git" ]; then
+    echo "==> Cloning DMGMaker into $DMGMAKER_DIR"
+    git clone "$DMGMAKER_REPO" "$DMGMAKER_DIR"
+  fi
+  local current
+  current=$(git -C "$DMGMAKER_DIR" rev-parse HEAD 2>/dev/null || echo "")
+  if [ "$current" != "$DMGMAKER_COMMIT" ]; then
+    echo "==> Pinning DMGMaker to $DMGMAKER_COMMIT"
+    git -C "$DMGMAKER_DIR" fetch --depth 1 origin "$DMGMAKER_COMMIT" 2>/dev/null \
+      || git -C "$DMGMAKER_DIR" fetch origin
+    git -C "$DMGMAKER_DIR" checkout --detach "$DMGMAKER_COMMIT"
+  fi
+}
+
 required=(APPLE_TEAM_ID DEVELOPER_ID_APPLICATION APPLE_ID APPLE_APP_PASSWORD
           SPARKLE_ED25519_PUBLIC_KEY SPARKLE_DOWNLOAD_URL_PREFIX
           VERSION_NUMBER BUILD_NUMBER)
@@ -119,16 +139,12 @@ echo "==> Stapling .app"
 xcrun stapler staple "$APP_PATH"
 xcrun stapler validate "$APP_PATH"
 
-echo "==> Creating DMG with stapled .app"
-DMG_STAGING="$BUILD_DIR/dmg-staging"
-mkdir -p "$DMG_STAGING"
-cp -R "$APP_PATH" "$DMG_STAGING/"
-ln -s /Applications "$DMG_STAGING/Applications"
-
-hdiutil create -volname "S.EE" \
-  -srcfolder "$DMG_STAGING" \
-  -ov -format UDZO \
-  "$DMG_PATH"
+echo "==> Creating DMG with DMGMaker (stapled .app)"
+setup_dmgmaker
+( cd "$DMGMAKER_DIR" && swift run -c release "DMG Maker" \
+    --app "$APP_PATH" --name "S.EE" )
+# DMGMaker writes <name>.dmg next to the input .app and gives no -o flag.
+mv "$EXPORT_DIR/S.EE.dmg" "$DMG_PATH"
 
 echo "==> Codesigning DMG"
 codesign --sign "$DEVELOPER_ID_APPLICATION" --timestamp "$DMG_PATH"
